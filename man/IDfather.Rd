@@ -2,30 +2,30 @@
 % Please edit documentation in R/IDfather.R
 \name{IDfather}
 \alias{IDfather}
-\title{Retrieves ID of father of ego}
+\title{ID of father of ego}
 \usage{
-IDfather(idego, dLH, keep_ego = FALSE)
+IDfather(idego, d = NULL)
 }
 \arguments{
-\item{idego}{ID}
+\item{idego}{ID of ego(s)}
 
-\item{dLH}{Name of database. If missing, dataLH_F is used.}
-
-\item{keep_ego}{Option to link show ID of ego together with ID of father}
+\item{d}{Name of database. If missing the dataset dLH distributed with the Families package is used.}
 }
 \value{
-ID of father or (if keep_ego=TRUE, object with ID of ego and ID of
+ID of father or (if keep_ego=TRUE, dataframe with ego-father dyals: ID of ego and ID of
 father). Returns NA if ID of father is not included in the database
 }
 \description{
-Function to retrieve the ID of father of ego or fathers of vector of egos
+Retrieves the ID of the father of ego or fathers of vector of egos. ID of the father is the
+ID of the partner of the mother. If the ID of the father listed in the dataset d differs from 
+the ID of the mother's partner, a warning is given.
 }
 \examples{
+# Load the data
+data(dLH,package = "Families")
 
-data(dataLH_F,package = "Families")
-IDfather (idego=sample (dataLH_F$ID,10))
+set.seed(31)
+idf <- IDfather (idego=sample (dLH$ID[dLH$gen>=2],10))
 
-}
-\author{
-Frans Willekens
+
 }

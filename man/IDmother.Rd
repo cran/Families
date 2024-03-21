@@ -2,31 +2,27 @@
 % Please edit documentation in R/IDmother.R
 \name{IDmother}
 \alias{IDmother}
-\title{Retrieves ID of mother of ego}
+\title{ID of mother of ego}
 \usage{
-IDmother(idego, dLH, keep_ego = FALSE)
+IDmother(idego, d = NULL)
 }
 \arguments{
 \item{idego}{ID}
 
-\item{dLH}{Name of database. If missing, dataLH_F is used.}
-
-\item{keep_ego}{Option to show ID of ego together with ID of mother}
+\item{d}{Name of database. If d is missing, the dataset dLH in the global environment (R workspace) is used. 
+If no dLH in the global environment, the database dLH distributed with the Families package is used.}
 }
 \value{
-ID of mother or (if keep_ego=TRUE, object with ID of ego and ID of
-mother). Returns NA if ID of mother is not included in the database
+ID of mother. Returns NA if ID of mother is not included in the database
 }
 \description{
 Retrieves the ID of mother of ego or mothers of vector of egos
 }
 \examples{
 
-data(dataLH_F,package = "Families")
-IDmother (sample (dataLH_F$ID,10))
-IDmother(sample (dataLH_F$ID,10),keep_ego=TRUE)
+# load the data
+data(dLH,package = "Families")
+IDmother (sample(dLH$ID[dLH$gen==2],1),d=dLH)
 
-}
-\author{
-Frans Willekens
+
 }

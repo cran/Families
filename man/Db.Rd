@@ -2,28 +2,28 @@
 % Please edit documentation in R/Db.R
 \name{Db}
 \alias{Db}
-\title{Retrieves the date(s) of birth in decimal format}
+\title{Date(s) of birth in decimal format}
 \usage{
-Db(idego, dLH)
+Db(idego, d = NULL)
 }
 \arguments{
 \item{idego}{vector of IDs of egos}
 
-\item{dLH}{Name of database. If dLH is missing, dataLH_F is used.}
+\item{d}{Name of database. If d is missing, dLH is used.}
 }
 \value{
-Returns the dates of birth
+Dates of birth (decimal format)
 }
 \description{
-Retrieves the date(s) of birth from the database
+Retrieves date(s) of birth from the database
 }
 \examples{
+# Load the data
+data(dLH,package = "Families")
 
 # Date of birth of first individual in database
-data(dataLH_F,package = "Families")
-Db(idego=1) 
+d <- dLH
+Db(idego=1,d=d) 
 
-}
-\author{
-Frans Willekens
+
 }

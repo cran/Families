@@ -1,6 +1,9 @@
 import ("msm")
-importFrom("stats", "aggregate", "rbinom", "runif", "uniroot")
-importFrom("utils", "str")
+importFrom("stats", "density","aggregate", "rbinom", "runif", "uniroot","na.omit","na.pass")
+importFrom("utils", "str","data","type.convert")
 importFrom("reshape","melt.data.frame")
+importFrom("ggplot2","aes","geom_histogram","stat","scale_y_continuous","geom_density","scale_x_continuous","scale_fill_brewer","guides","scale_color_manual","geom_segment","theme","element_text","xlab","after_stat","scale_fill_hue")
+importFrom(rlang,.data)
 
-export("Db", "Dd", "e0", "IDpartner","IDch", "IDfather", "IDmother","Multistate")
+
+export("Db", "Dd", "IDpartner","IDfather", "IDch","IDgch","Age", "Alive", "IDmother","IDau","IDsib","PlotAges","Kin_long","Nkin","Tests")

@@ -2,34 +2,45 @@
 % Please edit documentation in R/IDch.R
 \name{IDch}
 \alias{IDch}
-\title{Retrieves ID of children of ego}
+\title{IDs of children of ego}
 \usage{
-IDch(idego, dLH, keep_ego = FALSE)
+IDch(idego, d = NULL, keep_ego = FALSE)
 }
 \arguments{
 \item{idego}{ID of ego(s)}
 
-\item{dLH}{Name of database. If dLH is missing, dataLH_F is used.}
+\item{d}{Name of database. If d is missing, the dataset dLH in the global environment (R workspace) is used. 
+If no dLH in the global environment, the database dLH distributed with the Families package is used.}
 
-\item{keep_ego}{Option to link show ID of ego together with ID of mother}
+\item{keep_ego}{Logical variable. If TRUE, a dataframe of parent-child and father-child dyads is produced. 
+It includes, for each ego (parent), ego's ID and the IDs of ego's children.}
 }
 \value{
-ID of children. If ego has no children or IDs of children are not included
-in database, numeric(0) is returned. If keep_ego=TRUE, a data frame is returned with the
-following columns: IDego, ID of mother of children, ID of father of
-children, ID of children, sex of children.
+Two cases:
+\itemize{
+ \item keep_ego=FALSE: IDch() returns the IDs of children. If ego has no children or IDs of children are not
+included in database (e.g. in case of last generation considered), the missing data symbol NA is returned. 
+ \item keep_ego=TRUE: IDch() returns a data frame of parent-child dyads. It has the following columns: 
+ \itemize{
+   \item ID of parent of child (ego)
+   \item ID of child
+   \item sex of ego 
+   \item sex of child
+   }
+}
 }
 \description{
-Retrieves ID of children of ego or children of vector of egos
+Retrieves IDs of children of ego(s).
 }
 \examples{
+# Load the data
+data(dLH,package=("Families"))
 
-data(dataLH_F,package = "Families")
 IDch(idego=1)
-id <- sample (dataLH_F$ID[dataLH_F$gen==1],10)
-IDch(idego=sort(id),keep_ego=TRUE)
+set.seed(43)
+id <- sample (dLH$ID[dLH$gen==1],10)
+id2 <- IDch(idego=sort(id),keep_ego=TRUE)
+id3 <- IDch(id2$idch,keep_ego=TRUE)
 
-}
-\author{
-Frans Willekens
+
 }

@@ -1,94 +1,49 @@
 
-#' dataLH_F data
+#' @title Individual fertility histories of members of a virtual population. Sample dataset.
+#'
+#' @description Fertility histories based on period data and in the presence of mortality. 
+#' The histories are simulated from age-specific death rates and conditional fertility rates of USA 2021.
+#' The virtual population consists of 5 generations (with selected info on members of the sixth generation). 
+#' The VirtualPop package is used to generate the population. 
 #' 
-#' Simulated population of four generations, produced by 'VirtualPop'.
-#' 
-#' 
-#' @name dataLH_F
+#' @name dLH
+#' @aliases dLH
 #' @docType data
-#' @format A data frame with data on 2965 individuals (1000 in initial cohort). \describe{
-#'	\item{ID}{Identification number} 	
-#'	\item{gen}{Generation}
-#' 	\item{sex}{Sex. A factor with levels Males and Females}
-#' 	\item{bdated}{Date of birth (decimal date} 
-#'	\item{ddated}{Date of death (decimal date} 
-#' 	\item{x_D}{Age at death (decimal number} 	
-#'	\item{IDpartner}{ID of partner}
-#' 	\item{IDmother}{ID of mother} 	
-#'	\item{IDfather}{ID of father}
-#' 	\item{jch}{Child's line number in the household}
-#' 	\item{nch}{Number of children ever born}	
-#'	\item{id.1}{ID of first child} 
-#' 	\item{id.2}{ID of 2nd child}	
-#'	\item{id.3}{ID of 3rd child} 
-#' 	\item{id.4}{ID of 4th child}	
-#'	\item{id.5}{ID of 5th child} 
-#' 	\item{id.6}{ID of 6th child}	
-#'	\item{id.7}{ID of 7th child} 
-#' 	\item{id.8}{ID of 8th child}	
-#'	\item{id.9}{ID of 9th child} 
-#' 	\item{age.1}{Age of mother at birth of first child}
-#' 	\item{age.2}{Age of mother at birth of 2nd child}
-#' 	\item{age.3}{Age of mother at birth of 3rd child}
-#' 	\item{age.4}{Age of mother at birth of 4th child}
-#' 	\item{age.5}{Age of mother at birth of 5th child}
-#' 	\item{age.6}{Age of mother at birth of 6th child}
-#' 	\item{age.7}{Age of mother at birth of 7th child}
-#' 	\item{age.8}{Age of mother at birth of 8th child}
-#' 	\item{age.9}{Age of mother at birth of 9th child}}
-#' @source Simulation uses period mortality rates and fertility rates by birth
-#' order from the United States 2019. The data are downloaded from the Human
-#' Mortality Database (HMD) and the Human Fertility Database (HFD).
-#' @keywords datasets
+#' @usage data(dLH,package="Families")
+#' @format A data frame with data of about 7,000 individuals (2000 in initial cohort). \describe{
+#' \item{ID}{Identification number} 	
+#' \item{gen}{Generation}
+#' \item{cohort}{Birth cohort}
+#' \item{sex}{Sex. A factor with levels Males and Females}
+#' \item{bdated}{Date of birth (decimal date)} 
+#' \item{ddated}{Date of death (decimal date)} 
+#' \item{x_D}{Age at death (decimal number)} 	
+#' \item{IDmother}{ID of mother} 	
+#' \item{IDfather}{ID of father}
+#' \item{jch}{Child's line number in the household}
+#' \item{IDpartner}{ID of partner}
+#' \item{udated}{Date of union formation}
+#' \item{nch}{Number of children ever born to woman}}	
+#'
+#' @source The data for the simulation are period mortality rates by age and sex and 
+#' period fertility rates by age and birth
+#' order for the United States 2021. The data are downloaded from the Human
+#' Mortality Database (HMD) and the Human Fertility Database (HFD). 
 NULL
 
 
-
-
-#' Kinship Ties in Virtual Populations 
+#' Kinship Ties in Virtual Populations
 #' 
-#' 
-#' Tools to study kinship networks, grandparenthood, and double burden (presence of children and oldest old parents) in virtual population produced by ’VirtualPop’. 
+#' Tools to study kinship networks, grandparenthood, loss of close relatives and double burden
+#' (presence of children and oldest old parents) in virtual population produced
+#' by ’VirtualPop’.
 #' 
 #' 
 #' @name Families-package
 #' @aliases Families-package FamiliesPop
 #' @docType package
-#' @author Frans Willekens <Willekens@@nidi.nl>
+#' @author Frans Willekens <Willekens@nidi.nl>
 #' @keywords demography family kinship
-NULL
-
-
-
-
-
-
-#' rates data
-#' 
-#' Mortality rates by age and sex: fertility rates by age and birth order
-#' 
-#' @name rates
-#' @docType data
-#' @format A list of three objects. \describe{
-#' \item{ASDR}{Mortality rates} 
-#' \item{ASFR}{Fertility rates}
-#' \item{ratesM}{Multistate transition rates} }
-#' @source The data are downloaded from the Human Mortality Database (HMD) and
-#' the Human Fertility Database (HFD). Country: USA. Year: 2019
-#' @keywords datasets
-NULL
-
-#' dpopus data
-#'  
-#' Population of the United States in 2019 reported in the HMD (Population.txt file)
-#'  
-#' @name dpopus
-#' @docType data
-#' @format A data frame with 111 age groups (single years of age). \describe{
-#' \item{Females}{Female population}
-#' \item{Males}{Male population}}
-#' @source The data are downloaded from the Human Mortality Database (HMD). Country: USA. Year: 2019
-#' @keywords datasets
 NULL
 
 

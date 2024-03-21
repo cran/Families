@@ -1,41 +1,37 @@
-#' Retrieves ID of father of ego
+#' ID of father of ego
 #' 
-#' Function to retrieve the ID of father of ego or fathers of vector of egos
+#' Retrieves the ID of the father of ego or fathers of vector of egos. ID of the father is the
+#' ID of the partner of the mother. If the ID of the father listed in the dataset d differs from 
+#' the ID of the mother's partner, a warning is given. 
 #' 
 #' 
-#' @param idego ID
-#' @param dLH Name of database. If missing, dataLH_F is used.
-#' @param keep_ego Option to link show ID of ego together with ID of father
-#' @return ID of father or (if keep_ego=TRUE, object with ID of ego and ID of
+#' @param idego ID of ego(s)
+#' @param d Name of database. If missing the dataset dLH distributed with the Families package is used.
+#' @return ID of father or (if keep_ego=TRUE, dataframe with ego-father dyals: ID of ego and ID of
 #' father). Returns NA if ID of father is not included in the database
-#' @author Frans Willekens
+#'
 #' @examples
+#' # Load the data
+#' data(dLH,package = "Families")
 #' 
-#' data(dataLH_F,package = "Families")
-#' IDfather (idego=sample (dataLH_F$ID,10))
+#' set.seed(31)
+#' idf <- IDfather (idego=sample (dLH$ID[dLH$gen>=2],10))
+#' 
 #' 
 #' @export IDfather
-IDfather <-
-function(idego,dLH,keep_ego=FALSE)
-{if (missing(dLH)) 
-   {  dLH <- Families::dataLH_F
-   } 
-   id2 <- idego  
-# utils::globalVariables("datag")
-if (is.data.frame(id2)) # First col is mother and second is child (also after IDmother)
-   { idfather <- id2[,"IDfather"]
-     idEgo <- id2[,"IDego"] 
-    # grandmother and grandfather
-    idgm <- dLH$IDmother[idfather] # 1126 values of idego, of which 5620 females and 5003 of them with children (idch has 5003 values, about half are males). 
-    idgf <- dLH$IDfather[idfather]
-    idf <- cbind (IDgm=idgm,IDgf=idgf,IDm=IDmother(idego),IDf=idfather)
-   } else 
-   { # children of idEgo
-     idf2 <- dLH$IDfather[idego]
-     idf <- IDpartner (IDmother(idego))
-     if  (keep_ego)
-     { idf <- data.frame(IDfather=idf,IDego=idego) 
-     }
-   } 
-  return(idf)
+IDfather <- function(idego,d=NULL)
+{ # Tests
+   test <- Tests(idego=idego,d=d)
+  idego <- test$idego
+  d <- test$d
+
+  # ID of partner of mother
+  idf1 <- IDpartner(IDmother(idego))
+  if (is.na(idego[1])) idf2 <- NA else idf2 <- d$IDfather[idego]
+
+  if (any(!is.na(idf2)) | !is.na(any(idf2!=idf1)))
+      { warning("Some d$IDfather differs from IDpartner(IDmother(idego))")
+      }
+   idf1
+  return(idf1)
 }

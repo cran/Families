@@ -1,23 +1,29 @@
-#' Retrieves the date(s) of death in decimal format
+#' Date(s) of death in decimal format
 #' 
-#' Retrieves the date(s) of death from the database
+#' Retrieves date(s) of death from the database
 #' 
 #' 
 #' @param idego vector of IDs of egos
-#' @param dLH Name of database. If dLH is missing, dataLH_F is used.
-#' @return Returns the date of death
-#' @author Frans Willekens
+#' @param d Name of database. If d is missing, dLH is used.
+#' @return Date of death (decimal format)
 #' @examples
+#' # Load the data
+#' data(dLH,package = "Families")
 #' 
 #' # Date of death of first individual in database
-#' data(dataLH_F,package = "Families")
-#' Dd(idego=1) 
+#' Dd(idego=1,d=dLH) 
 #' 
 #' @export Dd
-Dd <- function (idego,dLH)
-{if (missing(dLH)) 
-   {  dLH <- Families::dataLH_F
-   } 
-   dd <- dLH$ddated[idego]
+#' 
+Dd <- function (idego,d=NULL)
+{ # Tests
+  test <- Tests(idego=idego,d=d)
+  idego <- test$idego
+  d <- test$d
+  
+  # Date death
+  dd <- rep(NA,length(idego))
+  dd[!is.na(idego)]  <- d$ddated[idego[!is.na(idego)]]
+
   return (dd)
 }

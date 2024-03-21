@@ -2,28 +2,26 @@
 % Please edit documentation in R/Dd.R
 \name{Dd}
 \alias{Dd}
-\title{Retrieves the date(s) of death in decimal format}
+\title{Date(s) of death in decimal format}
 \usage{
-Dd(idego, dLH)
+Dd(idego, d = NULL)
 }
 \arguments{
 \item{idego}{vector of IDs of egos}
 
-\item{dLH}{Name of database. If dLH is missing, dataLH_F is used.}
+\item{d}{Name of database. If d is missing, dLH is used.}
 }
 \value{
-Returns the date of death
+Date of death (decimal format)
 }
 \description{
-Retrieves the date(s) of death from the database
+Retrieves date(s) of death from the database
 }
 \examples{
+# Load the data
+data(dLH,package = "Families")
 
 # Date of death of first individual in database
-data(dataLH_F,package = "Families")
-Dd(idego=1) 
+Dd(idego=1,d=dLH) 
 
-}
-\author{
-Frans Willekens
 }

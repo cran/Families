@@ -2,32 +2,27 @@
 % Please edit documentation in R/IDpartner.R
 \name{IDpartner}
 \alias{IDpartner}
-\title{Retrieves ID of partner of ego or allocate partner to ego}
+\title{ID of partner of ego}
 \usage{
-IDpartner(idego, dLH)
+IDpartner(idego, d = NULL)
 }
 \arguments{
-\item{idego}{vector of ID of egos. If idego is missing, then the function
-allocates partners (from opposite sex) to egos. The allocation is random.}
+\item{idego}{vector of IDs of egos.}
 
-\item{dLH}{Name of database. If missing, dataLH_F is used.}
+\item{d}{Name of database. If d is missing, the dataset dLH in the global environment (R workspace) is used. 
+If no dLH in the global environment, the database dLH distributed with the Families package is used.}
 }
 \value{
-IDs of partners. If the argument idego is missing, then a data frame
-similar to 'dLH' is returned with IDs of partners completed.
+Vector of IDs of partners
 }
 \description{
-Retrieves ID of partners of vector of egos or randomly allocates partners to
-egos
+Retrieves ID of partners of vector of egos #'
 }
 \examples{
+# Load the data
+data(dLH,package = "Families")
+# Get ID of partner
+IDpartner(idego=1,d=dLH)
+IDpartner(idego=c(4,9,NA,30),d=dLH)  
 
-data(dataLH_F,package = "Families")
-IDpartner(idego=1)
-# Allocate partner to egos with ID 4,9,30.
-IDpartner(idego=dataLH_F$ID[c(4,9,30)])  
-
-}
-\author{
-Frans Willekens
 }
