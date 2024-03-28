@@ -6,7 +6,9 @@
 #' @param idref vector of IDs of reference population, usually idego
 #' @param refT Calendar date (decimal date) provided or computed
 
-#' @return Age of kin (or ego). If ego is not yet born or dead at the reference date, the missing data symbol NA is returned.  
+#' @return 
+#' \item{Age}{Age of kin (or ego). If ego is not yet born or dead at the reference date, the missing data symbol NA is returned.}
+#' 
 #' @examples
 #' 
 #' # Load data

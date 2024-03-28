@@ -7,7 +7,7 @@
 IDch(idego, d = NULL, keep_ego = FALSE)
 }
 \arguments{
-\item{idego}{ID of ego(s)}
+\item{idego}{ID of ego(s). If the vector idego includes missing elements (NA), they are removed.}
 
 \item{d}{Name of database. If d is missing, the dataset dLH in the global environment (R workspace) is used. 
 If no dLH in the global environment, the database dLH distributed with the Families package is used.}
@@ -19,13 +19,17 @@ It includes, for each ego (parent), ego's ID and the IDs of ego's children.}
 Two cases:
 \itemize{
  \item keep_ego=FALSE: IDch() returns the IDs of children. If ego has no children or IDs of children are not
-included in database (e.g. in case of last generation considered), the missing data symbol NA is returned. 
- \item keep_ego=TRUE: IDch() returns a data frame of parent-child dyads. It has the following columns: 
+included in database, the missing data symbol NA is returned. The
+vector idego may include the IDs of egos who form a couple. In that case, the IDs of their children are included 
+only once to prevent double-counting.
+ \item keep_ego=TRUE: IDch() returns a dataframe of parent-child dyads. If idego includes the IDs of egos 
+ who form a couple, then the IDs of their children are included twice, in the mother-child dyads and
+ in the father-child dyads. To select the father-child dyads, select the male egos. The dataframe of parent-child
+ dyads include childless females and males. The dyad has the ID of the female(male) and NA instead of the 
+ ID of the child. The object returned has the following columns: 
  \itemize{
-   \item ID of parent of child (ego)
+   \item ID of ego (parent of child)
    \item ID of child
-   \item sex of ego 
-   \item sex of child
    }
 }
 }

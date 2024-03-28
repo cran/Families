@@ -3,7 +3,7 @@
 #' Retrieves IDs of children of ego(s).
 #' 
 #' 
-#' @param idego ID of ego(s)
+#' @param idego ID of ego(s). If the vector idego includes missing elements (NA), they are removed.
 #' @param d Name of database. If d is missing, the dataset dLH in the global environment (R workspace) is used. 
 #' If no dLH in the global environment, the database dLH distributed with the Families package is used.  
 #' @param keep_ego Logical variable. If TRUE, a dataframe of parent-child and father-child dyads is produced. 
@@ -11,13 +11,17 @@
 #' @return Two cases:
 #' \itemize{
 #'  \item keep_ego=FALSE: IDch() returns the IDs of children. If ego has no children or IDs of children are not
-#' included in database (e.g. in case of last generation considered), the missing data symbol NA is returned. 
-#'  \item keep_ego=TRUE: IDch() returns a data frame of parent-child dyads. It has the following columns: 
+#' included in database, the missing data symbol NA is returned. The
+#' vector idego may include the IDs of egos who form a couple. In that case, the IDs of their children are included 
+#' only once to prevent double-counting.
+#'  \item keep_ego=TRUE: IDch() returns a dataframe of parent-child dyads. If idego includes the IDs of egos 
+#'  who form a couple, then the IDs of their children are included twice, in the mother-child dyads and
+#'  in the father-child dyads. To select the father-child dyads, select the male egos. The dataframe of parent-child
+#'  dyads include childless females and males. The dyad has the ID of the female(male) and NA instead of the 
+#'  ID of the child. The object returned has the following columns: 
 #'  \itemize{
-#'    \item ID of parent of child (ego)
+#'    \item ID of ego (parent of child)
 #'    \item ID of child
-#'    \item sex of ego 
-#'    \item sex of child
 #'    }
 #' }
 #'    
@@ -35,76 +39,53 @@
 #' @export IDch
 IDch <-
 function (idego,d=NULL,keep_ego=FALSE)
-{   if (all(is.na(idego))) idch3 <- NA else
-  { # Perform few tests
+{   if (all(is.na(idego))) return(dfch=NA) else
+  { # ==============   Perform few tests   ===============
+    # idego <- idego[!is.na(idego)]
     test <- Tests(idego=idego,d=d)
     idego <- test$idego
     d <- test$d
-   
-    #  =============    IDs of children of females (idchFem)  =========== 
-    # IDs of females (idF) in idego
-    idFem <- idego[d$sex[idego]=="Female"]
-    # Find individuals with ID of mother in idF
-    idchAFem <-  NA
-    if (length(idFem) > 0) idchAFem <- 
-              d$ID[d$IDmother%in%idFem[!is.na(idFem)]] else
-              idchAFem <- NA
+    if (all(is.na(idego))) return(dfch=NA)
+    # ============   IDs of females and males   =============
+    idFem <- idego[!is.na(idego) & d$sex[idego]=="Female"]
+    idMal <- idego[!is.na(idego) & d$sex[idego]=="Male"]
+    # ===========   IDs of children of women (IDchMOM) =============
+    idchFem <- d$ID[!is.na(d$IDmother) & d$IDmother%in%idFem]
+    if (length(idchFem)==0) idchFem <- NA
+    # ==========  IDs of children of males (IDchDAD) ============
+    idchMal <-  d$ID[!is.na(d$IDmother) & d$IDmother%in%IDpartner(idMal)]
+      
+    dfch <- c(idchFem,idchMal)
+    dfch <- unique(dfch[!is.na(dfch)])
+    # If idego is male without a partner
+    if (length(dfch) == 0) return(NA)
+
+    if (keep_ego)
+    { # If idego includes both females and their partners, ID of their
+      # child is included twice
+  # ================  dyads mother - child  =========
+    dfMOM <- data.frame(idego=IDmother(idchFem),idch=idchFem)
+    # ================  dyads father - child  =========
+    dfDAD <- data.frame(idego=IDfather(idchMal),idch=idchMal)    
     
-    #  =============   IDs of children of males (idchMal)  ==============
-    # IDs of males
-    idMal <- idego[d$sex[idego]=="Male"]
-    # Find individuals with ID of father in idMal
-    idchAMal <- NA
-    # Find individuals with ID of father in idF
-    if (length(idMal) > 0) idchAMal <- 
-      d$ID[d$IDmother%in%IDpartner(idMal)[!is.na(IDpartner(idMal))]]
+  # =========  Childless females and males included in idego  =========
+    idFem0 <- subset(idFem,d$nch[idFem]==0)
+    # If idego has no partner, idego has no children
+    idMal0 <- subset(idMal,d$nch[IDpartner(idMal)]==0 | 
+                              is.na(IDpartner(idMal)))
+                               # No partner d$nch is NA (and not 0)
+    dfP0 <- data.frame(idego=c(idFem0,idMal0))
+    if (length(dfP0$idego)>0) dfP0$idch <- NA
     
-    # ==========  IDs of children of all members of idego combined  =====
-    # Correct for double counting
-    idch3 <- unique(c(idchAMal[!is.na(idchAMal)],idchAFem[!is.na(idchAFem)]))
-    if (length(idch3)==0) idch3 <- NA
-    
-    # ======= IDs of dyads ego-child (dataframe)  =========
-    #          long format (females and males)
-    #   if ego has n children => n rows added
-    #   if ego has no children => one row added (for ego)
-    if (keep_ego==TRUE & !all(is.na(idch3)))
-     { # -----------  Children of females  --------------
-          idegoFemale <- idego[d$sex[idego]=="Female"]
-          # Create dataframe with ID of ego (idegoFemale) and ego's children
-         idch_mother <- 
-           d$ID[IDmother(d$ID)%in%idegoFemale[!is.na(idegoFemale)]]
-         idM <- NULL
-         if (length(idch_mother) > 0) 
-           idM <- data.frame(idego=IDmother(idch_mother),idch=idch_mother)
-         #  Add childless women included in idego
-         id_women0 <- idego[d$sex[idego]=="Female" & d$nch[idego]==0 | is.na(d$nch[idego])]
-         idw0 <- data.frame(idego=id_women0,idch=rep(NA,length(id_women0)))
-         idwomen <- rbind(idM,idw0)
-         
-         # -----------  Children of Males  --------------
-         idegoMale <- idego[d$sex[idego]=="Male"]
-         # Partner of idegoMale (if idegoMale has partner)
-         if (length(idegoMale)>0) idp <- IDpartner(idegoMale) else idp <- NA
-         # Children of idegoMale
-         idch_father <- d$ID[IDmother(d$ID)%in%idp[!is.na(idp)]]
-         idF <- NULL
-         if (length(idch_father) > 0) idF <- data.frame(idego=
-                      IDpartner(IDmother(idch_father)),idch=idch_father)         
-         #  Add childless men included in idego
-         id_men0 <- idegoMale[!idegoMale%in%idF$idego]
-         idmen0 <- data.frame(idego=id_men0,idch=rep(NA,length(id_men0)))
-         idmen <- rbind(idF,idmen0)        
-         
-         # -------  Merge males and females  ---------
-         idch2 <- rbind(idwomen,idmen)
-          # Number of individuals in generation 1 without a partner
-                # length(d$ID[idego][is.na(d$IDpartner[idego])])
-         # Sort data frame
-         idch2 <- idch2[order(idch2$idego,decreasing=FALSE),]
-         idch3 <- idch2
-     }
+  # ==================  Merge dataframes  =====================
+    dfch <- rbind(dfMOM,dfDAD,dfP0)
+    dfch <- dfch[!is.na(dfch$idego),]
+  # =================  Sort dataframe by idego  =================
+    dfch <- dfch[order(dfch$idego,decreasing=FALSE),]
+    # dfc has IDs of children TWICE + IDs of childless females and males
+    #     length(dfch$idego[is.na(dfch$idch)])   7874*2+2602=18350
+    }
   }
-   return (idch3)
+   return (dfch)
 }
 

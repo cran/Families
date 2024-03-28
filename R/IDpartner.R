@@ -23,5 +23,7 @@ idego <- test$idego
 d <- test$d
 
 # ===============  Get ID of partner(s) of ego  ===============
-return (d$IDpartner[idego])
+if (all(is.na(idego))) return(NA)
+idp <- d$IDpartner[idego]
+return (idp)
 }

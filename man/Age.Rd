@@ -12,7 +12,7 @@ Age(idref, refT)
 \item{refT}{Calendar date (decimal date) provided or computed}
 }
 \value{
-Age of kin (or ego). If ego is not yet born or dead at the reference date, the missing data symbol NA is returned.
+\item{Age}{Age of kin (or ego). If ego is not yet born or dead at the reference date, the missing data symbol NA is returned.}
 }
 \description{
 Ages are computed from calendar dates.

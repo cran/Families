@@ -1,8 +1,6 @@
-Families 1.0.2 Published July 8 2022
+# Families 1.0.2 Published July 8 2022
 
-# Families 2.0.0 Submitted March 2024
-
-# Changes in version 2.0.0
+# Families 2.0.0 Submitted March 2024: changes in version 2.0.0
 
 ## New functions
 
@@ -33,3 +31,14 @@ Families 1.0.2 Published July 8 2022
 The vignette “Families and Kinship Networks in Virtual Populations. The
 ‘Families’ package.” has been extended and is now a separate paper,
 which will hopefully be published in the coming months.
+
+# Families 2.0.1 Submitted March 2024: Changes in version 2.0.1
+
+## Functions updates:
+
+-   IDhc() Improved readability
+-   IDghc() Completely rewritten for improved readability and correction
+    of a bug
+-   Tests() A new test added: an idego value outside of the acceptable
+    range results in a warning an the omission of the unacceptable
+    values.

@@ -24,14 +24,15 @@ IDfather <- function(idego,d=NULL)
    test <- Tests(idego=idego,d=d)
   idego <- test$idego
   d <- test$d
-
+ 
+  if (all(is.na(idego))) return(NA)
   # ID of partner of mother
-  idf1 <- IDpartner(IDmother(idego))
-  if (is.na(idego[1])) idf2 <- NA else idf2 <- d$IDfather[idego]
+  idf1 <- IDpartner(IDmother(idego)) # NAs omitted
+ # if (is.na(idego[1])) idf2 <- NA else idf2 <- d$IDfather[idego]
 
-  if (any(!is.na(idf2)) | !is.na(any(idf2!=idf1)))
-      { warning("Some d$IDfather differs from IDpartner(IDmother(idego))")
-      }
-   idf1
+ # if (any(!is.na(idf2)) | !is.na(any(idf2!=idf1)))
+ #     { warning("Some d$IDfather differs from IDpartner(IDmother(idego))")
+ #      }
+ #  idf1
   return(idf1)
 }

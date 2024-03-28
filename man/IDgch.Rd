@@ -22,9 +22,12 @@ included in database, the missing data symbol NA is returned.
  \item keep_ego=TRUE: IDgch() returns a data frame of 
 child-parent-grandparent triads. A triad consists of: 
 \itemize{
-   \item ID of grandparent (ego), 
-   \item ID of child,
-   \item ID of grandchild.
+   \item{idego}  ID of grandparent (ego)
+   \item {idch}  ID of child
+   \item {idgch} ID of grandchild
+   \item{gp}     lineage: maternal grandfather, paternal grandmother, etc.
+   \item{idMOM}  ID of mother of grandchild
+   \item{idDAD}  ID of father of grandchild
    }
 }
 }

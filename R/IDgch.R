@@ -14,9 +14,12 @@
 #'  \item keep_ego=TRUE: IDgch() returns a data frame of 
 #' child-parent-grandparent triads. A triad consists of: 
 #' \itemize{
-#'    \item ID of grandparent (ego), 
-#'    \item ID of child,
-#'    \item ID of grandchild.
+#'    \item{idego}  ID of grandparent (ego)
+#'    \item {idch}  ID of child
+#'    \item {idgch} ID of grandchild
+#'    \item{gp}     lineage: maternal grandfather, paternal grandmother, etc.
+#'    \item{idMOM}  ID of mother of grandchild
+#'    \item{idDAD}  ID of father of grandchild
 #'    }
 #' }
 #' 
@@ -39,56 +42,82 @@ IDgch <- function(idego,d=NULL,keep_ego=FALSE)
   idego <- test$idego
   d <- test$d
   
+  # IDs of children
+  dfch <- IDch(idego,keep_ego=TRUE)
+  
+  # =========  IDs of grandchildren (all combined)  ==========
+  dfgch <- IDch(IDch(idego))
+  
   # =====   IDs of triads ego-child-grandchild (dataframe)   ======
-  if (keep_ego==FALSE)
-  { # IDs of all grandchildren combined (vector)  
-    dfgch <- IDch(IDch(idego))
-  } else
+  if (keep_ego==TRUE)
   { # IDs of dyads of all indiv in idego combined
     #             (female and male; no double counting)
+    # ============ Triads ego - child -grandchild   ========
     dfch <- IDch(idego,keep_ego=TRUE)
     
-    if (all(is.na(dfch))) idgch <- NA else 
-      { # IDs of grandchildren (children of children) of idego
-        dfgch <- IDch(idego=dfch$idch,keep_ego=TRUE) 
-        colnames(dfgch) <- c("idch","idgch")
-        # Add column with ID of ego
-        #dfgch$idego <- IDmother(dfgch$idch)
-        # dfgch <- dfgch[,c(3,1,2)]
+    if (all(is.na(dfch))) return() else 
+      { # ========  IDs of grandchildren (children of children) of idego ===
+        # each child has MOM=DAD in idego => idch twice in dfch$idch
+        #     7874*2 = 15748
+        
+      #  library(Families)
+      #  load("/users/frans/VirtualPop_data/dLH_USA2021_5_10000.RData")
+      #  idego <- dLH$ID[dLH$gen==1]
+        # IDs of grandchildren
+        idgch <- IDch(IDch(idego))  # 6102
+        # Mothers and fathers of grandchildren
+        idMOM <- IDmother(idgch)
+        idDAD <- IDfather(idgch)
+        # Maternal and paternal grandmothers and grandfathers
+        id_MOMdad <- IDmother(idDAD)
+        id_MOMmom <- IDmother(idMOM)
+        id_DADdad <- IDfather(idDAD)
+        id_DADmom <- IDfather(idMOM)
+        # Create dataframe (one line for each triad grandchild-child-ego)
+        dfgch1 <- data.frame(idgch=idgch,idch=idDAD,idMOM=idMOM,idDAD=idDAD,
+                             idgp=id_MOMdad,gp="MOMdad")
+        dfgch2 <- data.frame(idgch=idgch,idch=idMOM,idMOM=idMOM,idDAD=idDAD,
+                             idgp=id_MOMmom,gp="MOMmom")        
+        dfgch3 <- data.frame(idgch=idgch,idch=idDAD,idMOM=idMOM,idDAD=idDAD,
+                             idgp=id_DADdad,gp="DADdad")
+        dfgch4 <- data.frame(idgch=idgch,idch=idMOM,idMOM=idMOM,idDAD=idDAD,
+                             idgp=id_DADmom,gp="DADmom")
+        dfgch <- rbind (dfgch1,dfgch2,dfgch3,dfgch4)
+        dfgch <- dfgch[order(dfgch$idgch,decreasing=FALSE),]
+        dfgch <- dfgch[order(dfgch$idgp,decreasing=FALSE),]
+        dfgch$idego <- dfgch$idgp[dfgch$idgp%in%idego]
+        dfgch$sexego <- d$sex[dfgch$idego]
+        dfgch <- dfgch[,c("idego","idch","idgch","sexego","gp","idMOM","idDAD")] # idgp omitted
 
-        # =============   Add idego to obtain triad  ===============
-        #          idego is mother or father of a child 
-        dfgch$idgrandmother <- IDmother(dfgch$idch) 
-        dfgch$idgrandfather <- IDfather(dfgch$idch)
-        kk <- match(dfgch$idch,dfch$idch)
-        dfgch$idego <- dfch$idego[kk]
-        dfgch <- dfgch[!is.na(dfgch$idch),] # 15653
-        # Add idego with 0 children
-        ka <- dfch$idego[is.na(dfch$idch)]  # 2862
-        kb <- data.frame(idch=rep(NA,length(ka)),idgch=rep(NA,length(ka)),
-                         idgrandmother=rep(NA,length(ka)),
-                         idgrandfather=rep(NA,length(ka)),
-                         idego=ka)
-        dfgch <- rbind(dfgch,kb)
+        # Egos without children 
+        idego_ch0 <- subset(idego,(is.na(d$nch[idego]) | d$nch[idego]==0) & 
+            (is.na(d$nch[IDpartner(idego)]) | d$nch[IDpartner(idego)]==0))
+        # Egos without grandchildren (irrespective of presence of children)
+        idego_gch0 <- subset(idego,!idego%in%dfgch$idego)
+        # Egos with children but no grandchildren
+        idego_ch_gch0 <- subset(idego_gch0,!idego_gch0%in%idego_ch0)
         
-        dfgch <- dfgch[,c("idego","idch","idgch","idgrandmother","idgrandfather")]
-        dfgch <- dfgch[order(dfgch$idego),]
+        # Some childless egos have no partner (d$IDpartner=NA & d$nch=NA)
+        a <- length(unique(dfgch$idego))
+        b <- length(idego_ch0)
+        c <- length(idego_ch_gch0)
+        a+b+c
+        B <- data.frame(idego=idego_ch0,idch=rep(NA,b),idgch=rep(NA,b),
+                        sexego=rep(NA,b),
+                        gp=rep(NA,b),idMOM=rep(NA,b),idDAD=rep(NA,b))
+        B$sexego <- d$sex[B$idego]
+        C <- subset(dfch[,c(1,2)],dfch$idego%in%idego_ch_gch0)  
+        if (nrow(C)>0) 
+          { C$sexego <- d$sex[C$idego]
+            C$idgch <- NA
+            C$gp <- NA
+            C$idMOM <- NA
+            C$idDAD <- NA
+          }
+        dfgch <- rbind(dfgch,B,C)
+        dfgch <- dfgch[order(dfgch$idego,decreasing=FALSE),]
         
-        dfgch$idgch[is.na(dfgch$idgch)] <- 0
-          
-        # IDs of females without children
-        idch0 <- d$ID[idego][d$sex[idego]=="Female" & d$nch[idego]==0]
-        # Add females without children
-         kb <- data.frame(idego=idch0,
-                         idch=rep(NA,length(idch0)),
-                         idgch=rep(NA,length(idch0)),
-                         idgrandmother=rep(NA,length(idch0)),
-                         idgrandfather=rep(NA,length(idch0)))
-        dfgch <- rbind(dfgch,kb)
-        
-        # Rearrange rows
-        dfgch <- dfgch[order(dfgch$idego),]
-    }
+     }
   }
    return(dfgch)
 }

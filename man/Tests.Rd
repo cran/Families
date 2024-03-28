@@ -2,7 +2,7 @@
 % Please edit documentation in R/Tests.R
 \name{Tests}
 \alias{Tests}
-\title{Tests existence of data file.}
+\title{Checks the input data}
 \usage{
 Tests(idego, d = NULL)
 }
@@ -16,8 +16,17 @@ If no dLH in the global environment, the database dLH distributed with the Famil
 idego and d
 }
 \description{
-Tests existence of data file. If the data file d is null, the function checks whether dLH exists in the global environment. 
-If it does, d=dLH. If not, the message "Object dLH is not provided and does not exist" is displayed and
-the processing stops. 
-If some values in idego vector are missing (are NA) a message is displayed and the missing elements are removed.
+Tests existence of data file and identifies anomalies. If the data file d is null, 
+the function checks whether dLH exists in the global environment. 
+If it does, d=dLH. If not, the message "Object dLH is not provided and does not exist" 
+is displayed and the processing stops. If some values in idego vector are 
+missing (are NA) a message is displayed 
+and the missing elements are removed.
+}
+\details{
+The function Tests() is called in functions starting with ID, e.g. IDmother(). If
+the idego vector has values outside the acceptable range or missing values (NA), 
+these outvalues are omitted and Tests gives a warning. The warning is not 
+exported to the function calling Tests(). It is recommended to call Tests() before
+any other function call.
 }
