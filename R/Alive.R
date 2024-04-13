@@ -31,6 +31,7 @@ Alive <- function (idref,refA)
  
     reftest <- refA[!is.na(refA)][1]
     if (reftest < 200) ref2 <- Db(idref) + refA  else ref2 <- refA
+    # CHECK several idref are NA while ref2 has no NA
     born <- Db(idref) <= ref2 # ref2 can be age 0
     alive <- Dd(idref) >= ref2   
     alive_kin <- born & alive

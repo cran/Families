@@ -46,16 +46,13 @@ Tests <- function(idego,d=NULL)
    # ==========   Check that idego is included in dLH  ====
    war <- NA
    options(scipen=999)
-   if(any(is.na(idego)) | any(!idego%in%d$ID)) warning(paste(c(
-           paste0("From Tests: The following elements of the idego ",
-           "vector are NA or outside of the acceptable range from ",
-           min(d$ID)," to ",max(d$ID)," and are removed: "),
-           which(is.na(idego) | !idego%in%d$ID | idego < 0)),collapse=" "))
    idego[!idego%in%d$ID] <- NA
    # ==========   Do partners have an ID? ========
    tt <- all(is.na(d$IDpartner))
    if (tt) warning("Partners IDs are not provided")
       
-   aa <- list(idego=idego[!is.na(idego)],d=d)
+   aa <- list(idego=idego[!is.na(idego)],d=d) # NAs removed
+   aa <- list(idego=idego,d=d)                # NAs NOT removed
+   
   return(aa)
 }

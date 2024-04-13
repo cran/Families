@@ -42,3 +42,14 @@ which will hopefully be published in the coming months.
 -   Tests() A new test added: an idego value outside of the acceptable
     range results in a warning an the omission of the unacceptable
     values.
+
+# Families 2.0.2 April 2024
+
+## Function updates
+
+Tests(): Correct warning message. Some IDs may be missing, e.g. ego
+without cousins has no IDs of cousins. Originally, ego was removed from
+the list of ego-cousin dyads. That caused vectors of unequal length and
+warning “longer object length is not a multiple of shorter object
+length”. That issue is resolved by including the ego-NA dyads. The
+change prevents unnecessary warnings in Db() and Alive()

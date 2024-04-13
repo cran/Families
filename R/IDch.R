@@ -53,7 +53,9 @@ function (idego,d=NULL,keep_ego=FALSE)
     idchFem <- d$ID[!is.na(d$IDmother) & d$IDmother%in%idFem]
     if (length(idchFem)==0) idchFem <- NA
     # ==========  IDs of children of males (IDchDAD) ============
-    idchMal <-  d$ID[!is.na(d$IDmother) & d$IDmother%in%IDpartner(idMal)]
+    if (length(idMal>0)) 
+      {idchMal <-  d$ID[!is.na(d$IDmother) & d$IDmother%in%IDpartner(idMal)]} else
+        idchMal <- numeric(0)
       
     dfch <- c(idchFem,idchMal)
     dfch <- unique(dfch[!is.na(dfch)])
@@ -66,7 +68,9 @@ function (idego,d=NULL,keep_ego=FALSE)
   # ================  dyads mother - child  =========
     dfMOM <- data.frame(idego=IDmother(idchFem),idch=idchFem)
     # ================  dyads father - child  =========
-    dfDAD <- data.frame(idego=IDfather(idchMal),idch=idchMal)    
+    if (length(idMal>0)) 
+      { dfDAD <- data.frame(idego=IDfather(idchMal),idch=idchMal)} else
+        dfDAD <- numeric(0)
     
   # =========  Childless females and males included in idego  =========
     idFem0 <- subset(idFem,d$nch[idFem]==0)
